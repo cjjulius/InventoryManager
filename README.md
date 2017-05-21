@@ -1,7 +1,7 @@
 # InventoryManager
 Simple Database Inventory Manager (SDIM)
 
-<b>What is SDIM?<b>
+<b>What is SDIM?</b>
 
 All DBAs should keep track of their Servers/ Instances/ etc not only for their own edification, but for Management and security reasons as well. If you’re not, then you need to, as it comes in incredibly handy even if it isn’t a requirement of the job.
 
