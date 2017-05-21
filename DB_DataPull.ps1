@@ -10,8 +10,8 @@ param(
 [string]$RepositoryDB 			= 'DBAdmin' ,					#Repository Database
 [string]$CMSServer				= 'SOMSERVER' ,				#CMS location if applicable
 [string]$LogDir 				= "C:\Logs\" ,					#Directory to save Log
-[switch]$UseCMS					= $true	,						#Toggle to use CMS
-[switch]$Verbose 				= $true ,                		#Show Verbose information
+[switch]$UseCMS					= $false	,						#Toggle to use CMS
+[switch]$Verbose 				= $false ,                		#Show Verbose information
 [switch]$Debug 					= $false 						#Show Debug information
 )
 
