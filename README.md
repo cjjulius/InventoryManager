@@ -20,6 +20,8 @@ Clients - Powershell 4 or better.<br>
 CMS Server (Optional) - SQL Server 2012 or better. PowerShell 3 or better installed.<br>
 Active Directory Environment<br>
 
+<i>Note</i>: SDIM will be able to access 2005 - 2016 SQL Server Instances, however, it needs to be installed on 2012 or better. You might be able to get it to work on 2008R2, but that is not a supported setup.<br>
+
 <b>How do I install?</b>
 
 Is not a long process, but it does require certain things in a certain order. This will guide you through setting these up. The current version of this guide is for SDIM 2.3
