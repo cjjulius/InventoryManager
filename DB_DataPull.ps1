@@ -2,7 +2,7 @@
 #Owner: 	Charlton E Julius
 #Create:	2015-12-21
 #Version: 	2.3
-#Purpose: 	Fills Repository with server\instance.database information
+#Purpose: 	Fills Repository with server\instance.database and related information
 #--------------------
 
 param(
