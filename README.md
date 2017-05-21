@@ -118,4 +118,6 @@ The location of the Repository DB relative to the instance. If you set it up lik
 
 There's quite a bit of documentation available, and decently organized if I say so myself. You can get that here: http://wp.me/p5ee2M-2I
 
+This (Simple Database Inventory Manager™) is of course provided free of charge, use-at-your-own-risk. There is no warranty either expressed or implied. If SDIM™ burns down your data center, uninstalls all your favorite toolbars and ruins your best pair of dress socks, I’m not at fault. Remember to back up your databases!
+
 As always, feel free to contact me if you have comments, suggestions or questions.
