@@ -1,4 +1,4 @@
-SE [DBAdmin]
+USE [DBAdmin]
 GO
 
 SET ANSI_NULLS ON
