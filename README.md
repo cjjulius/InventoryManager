@@ -96,7 +96,7 @@ The location of the Repository DB relative to the instance. If you set it up lik
 -CMSServer "SomeServer"<br>
 The location of the CMS Server. You can pass in an instance name as well "SOMESERVER\SOMEINSTANCE"<br>
 -LogDir "C:\SomeDir\"<br>
-Where to place the log. Log file names will be generated automatically.<br>
+Where to place the log. Log file names will be generated automatically. Default is "C:\Logs\"<br>
 -UseCMS<br>
 Toggle on if you're using a CMS Server. If not, it will pull from the ServerList\InstanceList and not truncate the tables.<br>
 -Verbose<br>
