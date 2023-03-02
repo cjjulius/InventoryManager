@@ -26,7 +26,7 @@ Active Directory Environment<br>
 <br>
 <b>How do I install?</b>
 
-Is not a long process, but it does require certain things in a certain order. This will guide you through setting these up. The current version of this guide is for SDIM 2.4
+Is not a long process, but it does require certain things in a certain order. This will guide you through setting these up. The current version of this guide is for SDIM 2.4.
 
 <i>Step 1</i>: Set up your Repository Server
 
@@ -38,7 +38,7 @@ The repository server is where you are going to stored the data after you have p
  
  <i>Step 2</i>: Build schemas and tables
  
- On your Repository Server in the DBAdmin database (or whatever you chose to name the DB) run the following scripts in this order:
+ On your Repository Server in the DBAdmin database run the following scripts in this order:
 
 Utility.Schema.sql<br>
 Reports.Schema.sql<br>
@@ -51,7 +51,7 @@ dbo.JobList.Table.sql<br>
 
 <i>Step 3</i>: Create Views
 
- On your Repository Server in the DBAdmin database (or whatever you chose to name the DB) run the following scripts in this order:
+ On your Repository Server in the DBAdmin database run the following scripts in this order:
 
 Reports.vwGetInstancesGroup_SQLVer.View.sql<br>
 Reports.vwGetServers.View.sql<br>
@@ -59,7 +59,7 @@ Reports.vwGetServers_Instances_SQLVersion_Instance_FullList.View.sql<br>
 
 <i>Step 4</i>: Create Stored Prcedures
 
- On your Repository Server in the DBAdmin database (or whatever you chose to name the DB) run the following scripts in this order:
+ On your Repository Server in the DBAdmin database run the following scripts in this order:
  
 dbo.prGetConnectionInformation.StoredProcedure.sql<br>
 dbo.prGetDatabasesAndSize.StoredProcedure.sql<br>
@@ -112,13 +112,11 @@ The clients can run these through powershell, or you can create a batch file tha
 
 DB_DataPull_FrontEnd.ps1 Parameters<br>
 -RepositoryInstance<br>
-The location of the repository instance relative to the server running the script. Assumed to be the same server "(local)", but probably won't be.<br>
+The location of the repository instance relative to the server running the script. Assumed to be the same server "(local)", but probably won't be if clients are accessing it from their local machines.<br>
 -RepositoryDB<br>
 The location of the Repository DB relative to the instance. If you set it up like above, then that should be DBAdmin.<br>
 <br>
 <b>Further Information</b>
-
-There's quite a bit of documentation available, and decently organized if I say so myself. You can get that here: http://wp.me/p5ee2M-2I
 
 This (Simple Database Inventory Manager™) is of course provided free of charge, use-at-your-own-risk. There is no warranty either expressed or implied. If SDIM™ burns down your data center, uninstalls all your favorite toolbars and ruins your best pair of dress socks, I’m not at fault. Remember to back up your databases!
 
