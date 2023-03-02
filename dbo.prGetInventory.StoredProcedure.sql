@@ -1,15 +1,21 @@
 USE [DBAdmin]
 GO
 
+/****** Object:  StoredProcedure [dbo].[prGetInventory]    Script Date: 3/1/2023 2:54:33 PM ******/
+DROP PROCEDURE [dbo].[prGetInventory]
+GO
+
+/****** Object:  StoredProcedure [dbo].[prGetInventory]    Script Date: 3/1/2023 2:54:33 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
+
 /*
 Object:  	Stored Procedure [dbo].[prGetInventory]
-Date: 		2016-02-04
+Date: 		2023-03-01
 Author: 	Charlton Julius
 Notes: 		Requires DBAdmin Database, DatabaseList, ServerList and InstanceList tables
 */
@@ -25,6 +31,7 @@ AS
 			  ,[il].[InstanceName]
 			  ,[il].[MSSQLVersion]
 			  ,[il].[MSSQLServicePack]
+			  ,[il].[MSSQLCU]
 			  ,[il].[MSSQLEdition]
 			  ,[il].[MSSQLVersionLong]
 			  ,[jl].[JobID]
@@ -56,3 +63,5 @@ AS
 	END;
 
 GO
+
+

@@ -1,10 +1,17 @@
-﻿USE [DBAdmin]
+USE [DBAdmin]
 GO
-/****** Object:  StoredProcedure [dbo].[prGetInstancesAndDatabases]    Script Date: 11/14/2016 4:24:48 PM ******/
+
+/****** Object:  StoredProcedure [dbo].[prGetInstancesAndDatabases]    Script Date: 3/1/2023 2:52:19 PM ******/
+DROP PROCEDURE [dbo].[prGetInstancesAndDatabases]
+GO
+
+/****** Object:  StoredProcedure [dbo].[prGetInstancesAndDatabases]    Script Date: 3/1/2023 2:52:19 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 /*
 Object:  	Stored Procedure [dbo].[prGetInstancesAndDatabases]
@@ -22,6 +29,7 @@ AS
 			   ,[il].[MSSQLVersion]
 			   ,[il].[MSSQLEdition]
 			   ,[il].[MSSQLServicePack]
+			   ,[il].[MSSQLCU]
 			   ,[dl].[DatabaseName]
 			   ,(CASE WHEN dl.SizeinMB > 1000
 					THEN
@@ -40,3 +48,5 @@ AS
 
 
 GO
+
+

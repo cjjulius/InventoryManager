@@ -1,15 +1,21 @@
 USE [DBAdmin]
 GO
 
+/****** Object:  StoredProcedure [dbo].[prUpdateInstanceList]    Script Date: 3/1/2023 2:34:08 PM ******/
+DROP PROCEDURE [dbo].[prUpdateInstanceList]
+GO
+
+/****** Object:  StoredProcedure [dbo].[prUpdateInstanceList]    Script Date: 3/1/2023 2:34:08 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
 
+
 /*
 Object:  	Stored Procedure [dbo].[prUpdateInstanceList]
-Date: 		2016-02-04
+Date: 		2023-03-01
 Author: 	Charlton Julius
 Notes: 		Requires DBAdmin Database, InstanceList table
 */
@@ -21,6 +27,7 @@ CREATE PROCEDURE [dbo].[prUpdateInstanceList](
 	,@MSSQLEdition VARCHAR(MAX)
 	,@MSSQLServicePack VARCHAR(20)
 	,@InstanceId BIGINT
+	,@MSSQLCU VARCHAR(MAX)
 )
 AS
     BEGIN
@@ -30,7 +37,10 @@ AS
 			,MSSQLVersion = @MSSQLVersion
 			,MSSQLEdition = @MSSQLEdition
 			,MSSQLServicePack = @MSSQLServicePack
+			,MSSQLCU = @MSSQLCU
 		WHERE Id = @InstanceID	
     END;
     
 GO
+
+
