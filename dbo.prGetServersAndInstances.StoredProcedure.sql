@@ -1,17 +1,11 @@
 USE [DBAdmin]
 GO
 
-/****** Object:  StoredProcedure [dbo].[prGetServersAndInstances]    Script Date: 3/1/2023 2:44:29 PM ******/
-DROP PROCEDURE [dbo].[prGetServersAndInstances]
-GO
-
-/****** Object:  StoredProcedure [dbo].[prGetServersAndInstances]    Script Date: 3/1/2023 2:44:29 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
 
 /*
 Object:  	Stored Procedure [dbo].[prGetServersAndInstances]

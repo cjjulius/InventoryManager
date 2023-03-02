@@ -1,19 +1,17 @@
 USE [DBAdmin]
 GO
 
-EXEC sys.sp_dropextendedproperty @name=N'exp_Table_InstanceList' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'InstanceList'
-GO
-
-/****** Object:  Table [dbo].[InstanceList]    Script Date: 3/1/2023 2:21:17 PM ******/
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InstanceList]') AND type in (N'U'))
-DROP TABLE [dbo].[InstanceList]
-GO
-
-/****** Object:  Table [dbo].[InstanceList]    Script Date: 3/1/2023 2:21:17 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
+GO
+
+EXEC sys.sp_dropextendedproperty @name=N'exp_Table_InstanceList' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'InstanceList'
+GO
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InstanceList]') AND type in (N'U'))
+DROP TABLE [dbo].[InstanceList]
 GO
 
 CREATE TABLE [dbo].[InstanceList](

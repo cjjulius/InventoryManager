@@ -1,17 +1,11 @@
 USE [DBAdmin]
 GO
 
-/****** Object:  StoredProcedure [dbo].[prGetInstances]    Script Date: 3/1/2023 2:49:57 PM ******/
-DROP PROCEDURE [dbo].[prGetInstances]
-GO
-
-/****** Object:  StoredProcedure [dbo].[prGetInstances]    Script Date: 3/1/2023 2:49:57 PM ******/
 SET ANSI_NULLS ON
 GO
 
 SET QUOTED_IDENTIFIER ON
 GO
-
 
 /*
 Object:  	Stored Procedure [dbo].[prGetInstances]
@@ -34,9 +28,6 @@ AS
         FROM    dbo.InstanceList AS il
         ORDER BY il.InstanceName;
     END;
-
-
-
 
 GO
 

@@ -1,18 +1,6 @@
 USE [DBAdmin]
 GO
 
-/****** Object:  StoredProcedure [dbo].[prGetInventory]    Script Date: 3/1/2023 2:54:33 PM ******/
-DROP PROCEDURE [dbo].[prGetInventory]
-GO
-
-/****** Object:  StoredProcedure [dbo].[prGetInventory]    Script Date: 3/1/2023 2:54:33 PM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
 /*
 Object:  	Stored Procedure [dbo].[prGetInventory]
 Date: 		2023-03-01
