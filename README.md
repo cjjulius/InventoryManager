@@ -129,11 +129,12 @@ As always, feel free to contact me if you have comments, suggestions or question
 <i>2.3</i><br>
 - Works on 2005-2022.<br>
 - Pushed to 2.3 release for those with older environments.<br>
-<br>
-<i>2.4.0</i>
-* Uses SERVERPROPERTY('ProductUpdateLevel') to provide CU information. SP information still shown but will fail if trying to access a 2008R2 or earlier instances.<br>
-* Reports in frontend have been updated to show CU (will also show SP for version where that applies otherwise RTM).<br>
-* Added parameters instead of hard-coded variables for DB_DataPull_Frontend.ps1<br>
-* Cleaned up some code<br>
-* CMS will now report on itself as well.<br>
+<!-- -->
+<i>2.4.0</i><br>
+- Collects CU info via SERVERPROPERTY('ProductUpdateLevel'). This limits SDIM 2.4+ to 2012 or later instances.<br>
+- Reports in frontend have been updated to show CU 
+  - Will also show SP for version where that applies, otherwise RTM.<br>
+- Added parameters instead of hard-coded variables for DB_DataPull_Frontend.ps1<br>
+- Cleaned up some code<br>
+- CMS will now report on itself as well.<br>
 <br>
