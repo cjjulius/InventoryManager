@@ -127,6 +127,10 @@ As always, feel free to contact me if you have comments, suggestions or question
 <i>2.3</i><br>
 - Works on 2005-2022.<br>
 - Pushed to 2.3 release for those with older environments.<br>
+- isProduction column now does not display in Instances list. That was a feature that got removed from everywhere (before 1.0). Finally removed the column.<br>
+- HIPAA level feature is now completely removed.
+  - Never got this one working right and I decided that in the future I’ll go with something a bit more general, like maybe just ‘priority’ or something.<br>
+- Fixed a few typos. Me spel gud now.<br>
 <!-- -->
 <i>2.4.0</i><br>
 - Collects CU info via SERVERPROPERTY('ProductUpdateLevel'). This limits SDIM 2.4+ to 2012 or later instances.<br>
