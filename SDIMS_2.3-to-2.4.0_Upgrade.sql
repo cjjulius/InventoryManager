@@ -143,6 +143,9 @@ GO
 PRINT '[dbo].[prGetInventory]'
 GO
 
+DROP PROCEDURE [dbo].[prGetInventory]
+GO
+
 /*
 Object:  	Stored Procedure [dbo].[prGetInventory]
 Date: 		2023-03-01
