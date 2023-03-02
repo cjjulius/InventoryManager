@@ -1,14 +1,16 @@
 ﻿#--------------------
 #Owner: Charlton E Julius
-#Create: 2015-02-14
+#Update: 2023-03-02
 #Purpose: Builds GUI front-end for Datapull
-#Version: 2.3
+#Version: 2.4
 #--------------------
 
 
 #Point to Repository Instance.DB
-$RepositoryInstance = '(local)'
-$RepositoryDB = 'DBAdmin'
+param(
+[string]$RepositoryInstance 	= '(local)',		#Repository Server\Instance
+[string]$RepositoryDB 			= 'DBAdmin'			#Repository Database
+)
 
 #############################
 #  		XAML code Reader
@@ -18,7 +20,7 @@ $inputXML = @"
 <Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="DB_DataPull_FrontEnd" Height="275" Width="479">
+    Title="DB_DataPull_FrontEnd" Height="285" Width="479">
     <Grid Margin="0,0,2,11">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="310*"/>
