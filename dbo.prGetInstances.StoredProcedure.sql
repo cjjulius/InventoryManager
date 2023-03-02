@@ -1,7 +1,6 @@
 USE [DBAdmin]
 GO
 
-
 SET ANSI_NULLS ON
 GO
 
@@ -10,7 +9,7 @@ GO
 
 /*
 Object:  	Stored Procedure [dbo].[prGetInstances]
-Date: 		2016-02-04
+Date: 		2023-03-01
 Author: 	Charlton Julius
 Notes: 		Requires DBAdmin Database, InstanceList table
 */
@@ -23,14 +22,12 @@ AS
 				,il.InstanceName
                ,il.MSSQLVersion
                ,il.MSSQLServicePack
+			   ,il.MSSQLCU
                ,il.MSSQLEdition
                ,il.MSSQLVersionLong
         FROM    dbo.InstanceList AS il
         ORDER BY il.InstanceName;
     END;
-
-
-
 
 GO
 

@@ -23,6 +23,7 @@ AS
 			   ,[il].[MSSQLVersion]
 			   ,[il].[MSSQLEdition]
 			   ,[il].[MSSQLServicePack]
+			   ,[il].[MSSQLCU]
 		FROM	[dbo].[InstanceList] AS [il]
 		INNER JOIN [dbo].[ServerList] AS [sl] ( NOLOCK ) ON [sl].[Id] = [il].[ServerListId]
 		ORDER BY [sl].[ServerName]
@@ -31,3 +32,5 @@ AS
 
 
 GO
+
+

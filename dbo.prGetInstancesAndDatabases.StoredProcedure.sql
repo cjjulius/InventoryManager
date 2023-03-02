@@ -1,8 +1,9 @@
-﻿USE [DBAdmin]
+USE [DBAdmin]
 GO
-/****** Object:  StoredProcedure [dbo].[prGetInstancesAndDatabases]    Script Date: 11/14/2016 4:24:48 PM ******/
+
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -22,6 +23,7 @@ AS
 			   ,[il].[MSSQLVersion]
 			   ,[il].[MSSQLEdition]
 			   ,[il].[MSSQLServicePack]
+			   ,[il].[MSSQLCU]
 			   ,[dl].[DatabaseName]
 			   ,(CASE WHEN dl.SizeinMB > 1000
 					THEN
@@ -40,3 +42,5 @@ AS
 
 
 GO
+
+

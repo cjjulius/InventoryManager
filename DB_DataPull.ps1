@@ -1,18 +1,18 @@
 ﻿#--------------------
 #Owner: 	Charlton E Julius
-#Create:	2015-12-21
-#Version: 	2.3
+#Updated:	2023-03-01
+#Version: 	2.4
 #Purpose: 	Fills Repository with server\instance.database and related information
 #--------------------
 
 param(
-[string]$RepositoryInstance 	= '(local)',				#Repository Server\Instance
-[string]$RepositoryDB 			= 'DBAdmin' ,					#Repository Database
-[string]$CMSServer				= 'SOMSERVER' ,				#CMS location if applicable
-[string]$LogDir 				= "C:\Logs\" ,					#Directory to save Log
-[switch]$UseCMS					= $false	,						#Toggle to use CMS
-[switch]$Verbose 				= $false ,                		#Show Verbose information
-[switch]$Debug 					= $false 						#Show Debug information
+[string]$RepositoryInstance 	= '(local)',		#Repository Server\Instance
+[string]$RepositoryDB 			= 'DBAdmin' ,		#Repository Database
+[string]$CMSServer				= 'SOMSERVER' ,		#CMS location if applicable
+[string]$LogDir 				= "C:\Logs\" ,		#Directory to save Log
+[switch]$UseCMS					= $false	,		#Toggle to use CMS
+[switch]$Verbose 				= $false ,          #Show Verbose information
+[switch]$Debug 					= $false 			#Write Debug information
 )
 
 cls
@@ -215,7 +215,8 @@ if ($UseCMS){
 	$CMS_Servers = Invoke-SQL -datasource $CMSServer -database "msdb" -sqlCommand  " 
 	SELECT [server_name]
 	FROM [dbo].[sysmanagement_shared_registered_servers_internal]
-	ORDER BY server_name;
+	UNION
+    SELECT '$CMSServer'
 	"
 
 	foreach ($Row in $CMS_Servers.Rows)
@@ -268,7 +269,7 @@ foreach ($Row in $ConnectionString.Rows)
 	  	Verbose -Message "Server: $SubConnection"
 		
 	  	$Version = Invoke-SQL -datasource $SubConnection -database master -sqlCommand  "
-		SELECT  SERVERPROPERTY('productversion'), SERVERPROPERTY ('productlevel'), SERVERPROPERTY ('edition'), @@VERSION
+		SELECT  SERVERPROPERTY('productversion'), SERVERPROPERTY ('productlevel'), SERVERPROPERTY ('edition'), @@VERSION, SERVERPROPERTY('ProductUpdateLevel')
 		"		
 	}
 	Catch [System.Data.SqlClient.SqlException]
@@ -283,6 +284,7 @@ foreach ($Row in $ConnectionString.Rows)
 		$MSSQLServicePack = $($Row[1])
 		$MSSQLEdition = $($Row[2])
 		$MSSQLVersionLong = $($Row[3])
+        $MSSQLCU = $($Row[4])
 		
 		Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand "
 		EXEC dbo.prUpdateInstanceList 
@@ -290,7 +292,8 @@ foreach ($Row in $ConnectionString.Rows)
 			,@MSSQLVersion = '$MSSQLVersion'
 			,@MSSQLEdition = '$MSSQLEdition'
 			,@MSSQLServicePack = '$MSSQLServicePack'
-			,@InstanceId = $InstanceID	
+			,@InstanceId = $InstanceID
+            ,@MSSQLCU = '$MSSQLCU'	
 	"
 	}
 }
@@ -559,6 +562,7 @@ Verbose -Message "Collecting Service Information..."
 
 foreach ($Row in $ConnectionString.Rows)
 { 
+    Verbose -Message $Row[0]
 	Try
 	{
 		If (Test-Connection  $($Row[0]) -Count 1 -Quiet){
@@ -616,6 +620,7 @@ EXEC prGetServerNames;
 foreach ($Row in $ConnectionString.Rows)
 { 
 	$Server = $($Row[0])
+    Verbose -Message $Server
 	Try
 		{
 		If (Test-Connection  $Server -Count 1 -Quiet)
