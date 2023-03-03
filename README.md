@@ -106,7 +106,37 @@ Gives you lots of feedback.<br>
 -Debug<br>
 Writes Verbose to log silently.<br>
 
-<i>Step 6</i>: Set up the Clients<br>
+
+<i>Step 6</i>: Set up Permissions<br>
+
+The servers that will be queried for data should be done so via a service account. 
+
+Permssions will need to be done via two steps:
+
+1. Run Permissions.sql on all of the servers you will be collecting on. IF you are using a CMS run the script via that method on all servers.<br>
+You can comment out the DBAdmin section for servers that are not the CMS as they only access the CMS DBadmin.<br>
+
+2. Give wmi permissions to the service account.<br>
+
+The Hard Way (more secure):<br>
+1. Open Component Services (dcomcnfg.exe)
+2. Navigate to DCOM Config (Component Services > Computers > My Computer > DCOM Config)
+3. In the details pane find "Windows Management and Instrumentation"
+4. Right click and select 'Properties'
+5. Go to the 'Security' tab and note the 'Launch And Activation Permissions', and 'Access Permissions'
+6. Select 'Customize' if not already selected
+7. Click Edit
+8. In the Security properties page, click Add
+9. In the Select Users or Groups popup, add the guest account (for local machine it's just type 'guest' and click 'Check Names' then 'OK', not sure about server in a domain)
+10. Back in the Security properties page, note that Guest has less permissions by default than 'Everyone'. Give 'Remote Launch' and 'Remote Activation' and 'Local Activation'.
+
+The Easy Way (less secure):<br>
+Add the service account to the local Administrators group in lusrmgr.msc
+
+
+
+
+<i>Step 7</i>: Set up the Clients<br>
 
 The clients can run these through powershell, or you can create a batch file that passes the parameters in and then create shortcuts and whatnot to the batch (I like to pass PowerShell the -WindowStyle Hidden option). It's fairly simple.
 
@@ -117,6 +147,8 @@ The location of the repository instance relative to the server running the scrip
 The location of the Repository DB relative to the instance. If you set it up like above, then that should be DBAdmin.<br>
 <br>
 <b>Further Information</b>
+
+
 
 This (Simple Database Inventory Manager™) is of course provided free of charge, use-at-your-own-risk. There is no warranty either expressed or implied. If SDIM™ burns down your data center, uninstalls all your favorite toolbars and ruins your best pair of dress socks, I’m not at fault. Remember to back up your databases!
 
