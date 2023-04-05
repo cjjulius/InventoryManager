@@ -1,21 +1,24 @@
 ﻿#--------------------
 #Owner: 	Charlton E Julius
-#Updated:	2023-03-01
-#Version: 	2.4
+#Updated:	2023-04-02
 #Purpose: 	Fills Repository with server\instance.database and related information
 #--------------------
 
 param(
-[string]$RepositoryInstance 	= '(local)',		#Repository Server\Instance
-[string]$RepositoryDB 			= 'DBAdmin' ,		#Repository Database
-[string]$CMSServer				= 'SOMSERVER' ,		#CMS location if applicable
-[string]$LogDir 				= "C:\Logs\" ,		#Directory to save Log
-[switch]$UseCMS					= $false	,		#Toggle to use CMS
-[switch]$Verbose 				= $false ,          #Show Verbose information
-[switch]$Debug 					= $false 			#Write Debug information
+[string]$RepositoryInstance 	= 'SomeServer',	 	 #Repository Server\Instance
+[string]$RepositoryDB 			= 'DBAdmin' ,		 #Repository Database
+[string]$CMSServer				= 'SomeCMSServer',	 #CMS location if applicable
+[string]$LogDir 				= "C:\Logs\" ,		 #Directory to save Log
+[string]$LogFile				= 'DB_DataPull_Log', #LogName
+[string]$LocalDir				= 'C:\SDIM\'		 #Location of this file
+[switch]$UseCMS					= $false,			 #Toggle to use CMS
+[switch]$Verbose 				= $false,            #Show Verbose information
+[switch]$Debug 					= $false 			 #Write Debug information
 )
 
 cls
+
+cd $LocalDir
 
 #############################
 # 	Internal Variables
@@ -28,158 +31,31 @@ cls
 # 		Test File Path
 #############################
 
-Function Test-FilePath {
-	Param([string]$Path)
-	
-	if ((!(Test-Path $Path))) {
-    	Return $false
-    }
-	else {
-		Return $true
-	}
-}
+. .\funcs\func_Test-FilePath.ps1
 
 #############################
 # Verbose and Debug Messages
 #############################
 
-Function Verbose {
-	Param([string]$Message)
-	
-	if ($Verbose){
-		Write-Host $Message
-		
-		if ($LogDirExists){
-			Add-Content "$LogDir\DB_DataPull_Log_$Date.txt" "$Message"
-		}
-	}
-	
-	if ($Debug) {
-		
-		if ($LogDirExists){
-			Add-Content "$LogDir\DB_DataPull_Log_$Date.txt" "$Message"
-		}	
-	}
-}
+. .\funcs\func_Verbose.ps1
 
 #############################
-#  CONVERT WMI TO DATATABLE
-#	Source: https://github.com/Proxx/PowerShell/blob/master/Common/Get-Type.ps1
+#   GET TYPE OF DATA
 #############################
 
-function Get-Type 
-{ 
-    param($type) 
- 
-	$types = @( 
-	'System.Boolean', 
-	'System.Byte[]', 
-	'System.Byte', 
-	'System.Char', 
-	'System.Datetime', 
-	'System.Decimal', 
-	'System.Double', 
-	'System.Guid', 
-	'System.Int16', 
-	'System.Int32', 
-	'System.Int64', 
-	'System.Single', 
-	'System.UInt16', 
-	'System.UInt32', 
-	'System.UInt64') 
- 
-    if ( $types -contains $type ) 
-	{ 
-        Write-Output "$type" 
-    } 
-    else 
-	{ 
-        Write-Output 'System.String' 
-    } 
-} 
+. .\funcs\func_Get-Type.ps1
 
 #############################
 #CONVERT WMI-OBJ TO DATATABLE
-#	Source: http://poshcode.org/2119
 #############################
 
-function Out-DataTable 
-{ 
-    [CmdletBinding()] 
-    param([Parameter(Position=0, Mandatory=$true, ValueFromPipeline = $true)] [PSObject[]]$InputObject) 
- 
-    Begin 
-    { 
-        $dt = new-object Data.datatable   
-        $First = $true  
-    } 
-    Process 
-    { 
-        foreach ($object in $InputObject) 
-        { 
-            $DR = $DT.NewRow()   
-            foreach($property in $object.PsObject.get_properties()) 
-            {   
-                if ($first) 
-                {   
-                    $Col =  new-object Data.DataColumn   
-                    $Col.ColumnName = $property.Name.ToString()   
-                    if ($property.value) 
-                    { 
-                        if ($property.value -isnot [System.DBNull]) 
-						{ 
-                            $Col.DataType = [System.Type]::GetType("$(Get-Type $property.TypeNameOfValue)") 
-                        } 
-                    } 
-                    $DT.Columns.Add($Col) 
-                }   
-                if ($property.Gettype().IsArray) 
-				{ 
-                    $DR.Item($property.Name) =$property.value | ConvertTo-XML -AS String -NoTypeInformation -Depth 1 
-                }   
-                else 
-				{ 
-                    $DR.Item($property.Name) = $property.value 
-                } 
-            }   
-            $DT.Rows.Add($DR)   
-            $First = $false 
-        } 
-    }    
-    End 
-    { 
-        Write-Output @(,($dt)) 
-    } 
-}
+. .\funcs\func_Out-DataTable.ps1
 
 #############################
 #	  Run SQL Commands
-#	Based on: https://github.com/Proxx/PowerShell/blob/master/Network/Invoke-SQL.ps1
 #############################
-function Invoke-SQL 
-{
-    param
-	(
-        [string] $dataSource,
-        [string] $database,
-        [string] $sqlCommand
-    )
-    $connectionString = "Data Source=$dataSource; " +
-            "Integrated Security=SSPI; " +
-            "Initial Catalog=$database"
 
-    $connection = new-object system.data.SqlClient.SQLConnection($connectionString)
-    $command = new-object system.data.sqlclient.sqlcommand($sqlCommand,$connection)
-    $connection.Open()
-
-    $adapter = New-Object System.Data.sqlclient.sqlDataAdapter $command
-    $dataset = New-Object System.Data.DataSet
-    $adapter.Fill($dataSet) | Out-Null
-
-    $connection.Close()
-    $dataSet.Tables
-
-}
+. .\funcs\func_Invoke-SQL.ps1
 
 #############################
 #	 Set Log File Existence
@@ -302,7 +178,7 @@ foreach ($Row in $ConnectionString.Rows)
 #	 GET DATABASE INFO
 #############################
 
-Verbose -Message "Collecting Database Information..."
+Verbose -Message "Collecting Database Information..." -LogName $LogFile
 
 $ConnectionString = Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand  " 
 TRUNCATE TABLE dbo.DatabaseList;
@@ -315,47 +191,81 @@ foreach ($Row in $ConnectionString.Rows)
 	{
 		$SubConnection = $($Row[0]) -replace '\\MSSQLSERVER',''
 	  	$InstanceID = $($Row[2])
-	  	Verbose -Message "Server: $SubConnection"
+	  	Verbose -Message "Server: $SubConnection" -LogName $LogFile
 	  	$DataPull = Invoke-SQL -datasource $SubConnection -database master -sqlCommand  "
-		with fs
-		as
-		(
-		    select database_id, type, size * 8.0 / 1024 size
-		    from sys.master_files
-		)
-		select 
-			$InstanceID AS 'InstanceId',
-			name,
-		    (SELECT	CASE WHEN CAST(SUM(size) AS INT) < 1
-					THEN 1
-					ELSE CAST(SUM(size) AS INT)
-					END
+		    with fs
+		    as
+		    (
+		        select database_id, type, size * 8.0 / 1024 size
+		        from sys.master_files
+		    )
+		    select 
+		    	$InstanceID AS 'InstanceId',
+		    	name
+		    	,SUSER_SNAME(db.owner_sid) AS 'database_owner'
+		    	,db.recovery_model_desc AS 'recovery_model'
+		    	,db.compatibility_level
+		    	,db.is_query_store_on
+		    	,db.is_encrypted
+		    	,db.is_auto_close_on
+		    	,db.is_auto_shrink_on
+		    	,db.state_desc
+		    	,db.snapshot_isolation_state_desc
+		    	,db.is_read_committed_snapshot_on
+		    	,page_verify_option_desc
+		    	,db.is_auto_create_stats_on
+		        ,(SELECT CASE   WHEN CAST(SUM(size) AS INT) < 1
+		    			        THEN 1
+		    			        ELSE CAST(SUM(size) AS INT)
+		        END
 
-			FROM	fs
-			WHERE	type = 0
-				AND fs.database_id = db.database_id) AS DataFileSizeMB
-		from sys.databases db
-		ORDER BY DataFileSizeMB
+		    	FROM	fs
+		    	WHERE	type = 0
+		    		AND fs.database_id = db.database_id) AS DataFileSizeMB
+		    from sys.databases db
 		"		
 	}
 	Catch [System.Data.SqlClient.SqlException]
 	{
-		Verbose -Message "Cannot Collect Information on $SubConnection"
-		Verbose -Message "$_"
+		Verbose -Message "Cannot Collect Information on $SubConnection" -LogName $LogFile
+		Verbose -Message "$_" -LogName $LogFile
 	}
 
 	foreach ($Row in $DataPull.Rows)
-	{ 
-		$Size = $Row[2]
-		$DatabaseName = $($Row[1])
-		$InstanceListId = $Row[0]
+	{
+        $InstanceListId 				= $Row[0]
+		$DatabaseName 					= $($Row[1])
+		$database_owner				    = $($Row[2])
+        $recovery_model				    = $($Row[3])
+        $compatibility_level			= $Row[4]
+        $is_query_store_on				= $Row[5]
+        $is_encrypted					= $Row[6]
+        $is_auto_close_on				= $Row[7]
+        $is_auto_shrink_on				= $Row[8]
+        $state_desc					    = $($Row[9])
+        $snapshot_isolation_state_desc  = $($Row[10])
+        $is_read_committed_snapshot_on  = $Row[11]
+        $page_verify_option_desc		= $Row[12]
+        $is_auto_create_stats_on		= $Row[13]
+		$Size 							= $Row[14]
 
 		Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand "
 		EXEC dbo.prInsertDatabaseList
-			 @DatabaseName = '$DatabaseName'
-			,@InstanceListId = '$InstanceListId'
-			,@Size = $Size
-		
+			 @InstanceListId 				= $InstanceListId
+            ,@DatabaseName 					= '$DatabaseName'
+            ,@database_owner				= '$database_owner'				  
+            ,@recovery_model				= '$recovery_model'				  
+            ,@compatibility_level			= $compatibility_level			
+            ,@is_query_store_on				= $is_query_store_on				
+            ,@is_encrypted					= $is_encrypted					
+            ,@is_auto_close_on				= $is_auto_close_on				
+            ,@is_auto_shrink_on				= $is_auto_shrink_on				
+            ,@state_desc					= '$state_desc'					  
+            ,@snapshot_isolation_state_desc = '$snapshot_isolation_state_desc'
+            ,@is_read_committed_snapshot_on = $is_read_committed_snapshot_on
+            ,@page_verify_option_desc		= '$page_verify_option_desc'		
+            ,@is_auto_create_stats_on		= $is_auto_create_stats_on		
+            ,@Size 							= $Size
 		"
 	}
 }
@@ -509,7 +419,7 @@ FROM
 	}
 	Catch [System.Data.SqlClient.SqlException]
 	{
-		Verbose -Message "Cannot Collect Information on $SubConnection"
+		Verbose -Message "Cannot Collect Job Information on $SubConnection"
 		Verbose -Message "$_"
 	}
 
@@ -654,4 +564,297 @@ foreach ($Row in $ConnectionString.Rows)
 		Verbose -Message $_
 	}
 }
+
+#############################
+#	 GET TABLE INFO
+#############################
+
+Verbose -Message "Collecting Table Information..." -LogName $LogFile
+
+$ConnectionString = Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand  " 
+TRUNCATE TABLE dbo.TableList;
+EXEC dbo.prGetConnectionInformation;
+"
+
+foreach ($Row in $ConnectionString.Rows)
+{ 
+	Try
+	{
+		$SubConnection = $($Row[0]) -replace '\\MSSQLSERVER',''
+	  	$InstanceID = $($Row[2])
+
+	  	Verbose -Message "Getting Databases from $SubConnection" -LogName $LogFile
+
+	  	$DataPull = Invoke-SQL -datasource $SubConnection -database master -timeout 180 -sqlCommand  "
+		SELECT [name]
+        FROM [sys].[databases] AS [dbs]
+        WHERE [dbs].[user_access] = 0
+	        AND [dbs].[state] = 0
+		"		
+	}
+	Catch [System.Data.SqlClient.SqlException]
+	{
+		Verbose -Message "Cannot Collect Database from $SubConnection" -LogName $LogFile
+		Verbose -Message "$_" -LogName $LogFile
+	}
+
+	foreach ($TRow in $DataPull.Rows)
+	{
+        Try
+        {
+            Verbose -Message "Collecting Table information on $SubConnection.$($TRow[0])" -LogName $LogFile
+
+	  	    $TablePull = Invoke-SQL -datasource $SubConnection -database $($TRow[0]) -timeout 720 -sqlCommand  "
+		    		SELECT 
+		    	 SERVERPROPERTY('MachineName')									AS ServerName
+		    	,@@SERVICENAME													AS InstanceName
+		    	,DB_NAME()														AS DatabaseName
+		        ,s.Name															AS SchemaName
+		    	,t.NAME															AS TableName
+		        ,p.rows															AS TableRows
+		        ,SUM(a.total_pages) * 8											AS TotalSpaceKB
+		        ,CAST(
+		    		ROUND(
+		    				(
+		    					(SUM(a.total_pages) * 8) / 1024.00
+		    				)
+		    			 , 2
+		    			 ) 
+		    		 AS NUMERIC(36, 2)
+		    		 )															AS TotalSpaceMB
+		        ,SUM(a.used_pages) * 8											AS UsedSpaceKB
+		        ,CAST(
+		    		ROUND(
+		    				(
+		    				(SUM(a.used_pages) * 8) / 1024.00
+		    				)
+		    			 , 2
+		    			 ) 
+		    		AS NUMERIC(36, 2)
+		    		 )															AS UsedSpaceMB
+		        ,(SUM(a.total_pages) - SUM(a.used_pages)) * 8					AS UnusedSpaceKB
+		        ,CAST(
+		    		ROUND(
+		    				(
+		    					(
+		    					SUM(a.total_pages) - SUM(a.used_pages)
+		    					) * 8
+		    				) / 1024.00
+		    			 , 2
+		    			 ) 
+		    		AS NUMERIC(36, 2))											AS UnusedSpaceMB
+		    FROM sys.tables t
+		    INNER JOIN		sys.indexes i 
+		    	ON t.OBJECT_ID = i.object_id
+		    INNER JOIN		sys.partitions p 
+		    	ON i.object_id = p.OBJECT_ID 
+		    		AND i.index_id = p.index_id
+		    INNER JOIN sys.allocation_units a 
+		    	ON p.partition_id = a.container_id
+		    LEFT OUTER JOIN sys.schemas s 
+		    	ON t.schema_id = s.schema_id
+		    WHERE t.NAME NOT LIKE 'dt%' 
+		        AND t.is_ms_shipped = 0
+		        AND i.OBJECT_ID > 255 
+		    GROUP BY 
+		         t.Name
+		    	,s.Name
+		    	,p.Rows
+		    "
+    
+            	foreach ($iRow in $TablePull.Rows)
+            	{
+                    Try
+                    {
+                    #Verbose -Message "Inserting table information on $($iRow[0]).$($iRow[2]).$($iRow[3]).$($iRow[4])" -LogName $LogFile
+    
+                    $ServerName =    $($iRow[0])
+                    $InstanceName =  $($iRow[1])  
+                    $DatabaseName =  $($iRow[2])
+                    $SchemaName =    $($iRow[3])
+                    $TableName =     $($iRow[4])
+                    $TableRows =     $iRow[5]
+                    $TotalSpaceKB =  $iRow[6]
+                    $TotalSpaceMB =  $iRow[7]
+                    $UsedSpaceKB  =  $iRow[8]
+                    $UsedSpaceMB =   $iRow[9]
+                    $UnusedSpaceKB = $iRow[10]
+                    $UnusedSpaceMB = $iRow[11] 
+            
+                   	Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand "
+                   	EXEC dbo.prInsertTableList
+                   	    @ServerName	=  '$ServerName'
+                       ,@InstanceName	=  '$InstanceName'
+                       ,@DatabaseName	=  '$DatabaseName'
+                       ,@SchemaName	=  '$SchemaName'
+                       ,@TableName		=  '$TableName'
+                       ,@TableRows		=  $TableRows
+                       ,@TotalSpaceKB	=  $TotalSpaceKB
+                       ,@TotalSpaceMB	=  $TotalSpaceMB
+                       ,@UsedSpaceKB	=  $UsedSpaceKB
+                       ,@UsedSpaceMB	=  $UsedSpaceMB
+                       ,@UnusedSpaceKB =  $UnusedSpaceKB
+                       ,@UnusedSpaceMB = $UnusedSpaceMB 
+                   	"  
+                 }
+               	 Catch [System.Data.SqlClient.SqlException]
+               	 {
+               	    Verbose -Message "Cannot Insert information on $($iRow)" -LogName $LogFile
+               	    Verbose -Message "$_" -LogName $LogFile
+               	 }
+    
+             }
+        }
+	    Catch [System.Data.SqlClient.SqlException]
+	    {
+		    Verbose -Message "Cannot Collect Information on $SubConnection.$($Row[0])" -LogName $LogFile
+		    Verbose -Message "$_" -LogName $LogFile
+	    }
+    }
+
+}
+
+#############################
+#	 GET PERMISSIONS
+#############################
+
+Verbose -Message "Collecting Permission Information..." -LogName $LogFile
+
+$ConnectionString = Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand  " 
+TRUNCATE TABLE stage.tDBPermission;
+TRUNCATE TABLE stage.tSrvPermission;
+EXEC dbo.prGetConnectionInformation;
+"
+
+foreach ($Row in $ConnectionString.Rows)
+{ 
+	Try
+	{
+		$SubConnection = $($Row[0]) -replace '\\MSSQLSERVER',''
+	  	$InstanceID = $($Row[2])
+
+	  	Verbose -Message "Getting Permissions from $SubConnection" -LogName $LogFile
+
+        $DBPermission = Invoke-SQL -datasource $SubConnection -database master -timeout 3600 -sqlCommand  "
+		EXEC [dbo].[sp_DBPermissions] @DBName='All', @Output = 'Report'
+        WITH RESULT SETS
+        (
+        	(
+        	 [DBName] [sysname],
+        	 [DBPrincipal] [sysname],
+        	 [SrvPrincipal] [sysname],
+        	 [type] [char](5),
+        	 [type_desc] [nvarchar](100),
+        	 [RoleMembership] [nvarchar](MAX),
+        	 [DirectPermissions] [nvarchar](MAX)
+        	)
+        )
+        "
+	  	$SrvPermission = Invoke-SQL -datasource $SubConnection -database master -timeout 3600 -sqlCommand  "
+		EXEC [dbo].[sp_SrvPermissions] @Output = 'Report'
+        WITH RESULT SETS
+        (
+        	(
+        	 [SrvPrincipal] [sysname]
+        	,[type] [char](5)
+        	,[type_desc] [nvarchar](100)
+        	,[is_disabled] [int]
+        	,[RoleMembership] [sysname]
+        	,[DirectPermissions] [nvarchar](256)
+        	)
+        )
+		"
+
+	}
+	Catch [System.Data.SqlClient.SqlException]
+	{
+		Verbose -Message "Cannot Collect Permissions from $SubConnection" -LogName $LogFile
+		Verbose -Message "$_" -LogName $LogFile
+	}
+
+	foreach ($DRow in $DBPermission.Rows)
+	{
+        Try
+        {
+            $ServerName			= $SubConnection
+            $DBName 			= $($DRow[0])
+            $DBPrincipal		= $($DRow[1])
+            $SrvPrincipal		= $($DRow[2])
+            $type				= $($DRow[3])
+            $type_desc			= $($DRow[4])
+            $RoleMembership		= $($DRow[5])
+            $DirectPermissions	= $($DRow[6])
+            
+            $ConnectionString = Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand  " 
+            EXEC [dbo].[prStageDBPermissions]
+                 @ServerName			='$ServerName'		
+                ,@DBName                ='$DBName' 		
+                ,@DBPrincipal           ='$DBPrincipal'	
+                ,@SrvPrincipal          ='$SrvPrincipal'	
+                ,@type                  ='$type'			
+                ,@type_desc             ='$type_desc'		
+                ,@RoleMembership        ='$RoleMembership'	
+                ,@DirectPermissions     ='$DirectPermissions'
+            "
+	  	    
+        }
+	    Catch [System.Data.SqlClient.SqlException]
+	    {
+		    Verbose -Message "Cannot Collect DB Permissions on $SubConnection" -LogName $LogFile
+		    Verbose -Message "$_" -LogName $LogFile
+	    }
+    }
+
+    foreach ($SRow in $SrvPermission.Rows)
+	{
+        Try
+        {
+            $ServerName			= $SubConnection
+            $SrvPrincipal		= $($SRow[0])
+            $type				= $($SRow[1])
+            $type_desc			= $($SRow[2])
+            $is_disabled		= $($SRow[3])
+            $RoleMembership		= $($SRow[4])
+            $DirectPermissions	= $($SRow[5])
+            
+            $ConnectionString = Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand  " 
+            EXEC [dbo].[prStageSrvPermissions]
+                  @ServerName			='$ServerName'
+                 ,@SrvPrincipal			='$SrvPrincipal'
+                 ,@type					='$type'
+                 ,@type_desc			='$type_desc'
+                 ,@is_disabled			='$is_disabled'
+                 ,@RoleMembership		='$RoleMembership'
+                 ,@DirectPermissions	='$DirectPermissions'
+            "
+	  	    
+        }
+	    Catch [System.Data.SqlClient.SqlException]
+	    {
+		    Verbose -Message "Cannot Collect Server Permissions on $SubConnection" -LogName $LogFile
+		    Verbose -Message "$_" -LogName $LogFile
+	    }
+    }
+}
+  
+Verbose -Message "Merging into final tables." -LogName $LogFile 
+
+   $ConnectionString = Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand  "
+       EXEC [dbo].[prMergeDBPermissions]"
+
+   $ConnectionString = Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand  "
+       EXEC [dbo].[prMergeSrvPermissions]"
+
+
+#############################
+#		FINISH UP
+#############################
+
+[DateTime]$CompletionTime = $(Get-Date)
+
+Invoke-SQL -datasource $RepositoryInstance -database $RepositoryDB -sqlCommand "
+		EXEC [Utility].[prSetLastRun]
+        @LastRun = '$CompletionTime';
+	"
+
 Verbose -Message "Done."
