@@ -12,7 +12,7 @@ All DBAs should keep track of their Servers/ Instances/ etc not only for their o
 
 Most of the time, this information is compiled into a spreadsheet of some kind or possibly in a word processing document somewhere. Keeping this data up-to-date and accurate is a pain, especially when you have to break it out into multiple tabs and/or over multiple documents.
 
-You could get a full-blown inventory manager that collects and compiles all the data and organizes it for you. But there’s a definite cost to that solution and not one that all companies will find useful (Read: “It’s not in the budget this quarter”).
+You could get a full-blown inventory manager that collects and compiles all the data and organizes it for you. But there’s a definite cost to that solution and not one that all companies will find useful (Read: “It’s not in the budget this year”).
 
 What if you can’t get someone to shell out the money for a product like that? Then you have to either keep with the spreadsheets (yuck) or you need to find another solution with the tools you have.
 
@@ -20,9 +20,9 @@ This is an attempt to do this and make it portable from one system to another.<b
 <br>
 <h2>Requirements</h2>
 
-Repository Server - SQL Server 2012 or better. PowerShell 3 or better installed.<br>
+Repository Server - SQL Server 2016 (2012 if removing temporal tables functionality) or better. PowerShell 3 or better installed.<br>
 Clients - Powershell 4 or better.<br>
-CMS Server (Optional) - SQL Server 2012 or better. PowerShell 3 or better installed.<br>
+CMS Server - SQL Server 2012 or better. PowerShell 3 or better installed.<br>
 Active Directory Environment<br>
 
 <i>Note SDIM v2.3 and earlier</i>: SDIM will be able to access 2005 - 2022 SQL Server Instances, however, it needs to be installed on 2012 or better. You might be able to get it to work on 2008R2, but that is not a supported setup.<br>
@@ -38,7 +38,7 @@ Is not a long process, but it does require certain things in a certain order. Th
 
 <h3><i>Step 1</i>: Set up your Repository Server</h3>
 
-The repository server is where you are going to stored the data after you have pulled it from your instances. It can be the same server as your CMS or something else entirely.  This guide assumes that you are using a CMS and the DBAdmin database. If not, then you'll need to use the correct switches and change the scripts to point to your Server\Instance.Database.
+The repository server is where you are going to store the data after you have pulled it from your instances. It can be the same server as your CMS or something else entirely.  This guide assumes that you are using a CMS and the DBAdmin database. If not, then you'll need to use the correct switches and change the scripts to point to your Server\Instance.Database.
  
  On your Repository Server, run the following script:
  
@@ -56,8 +56,6 @@ stage.Schema.sql<br>
 dbo.DatabaseList.Table.sql<br>
 dbo.InstanceList.Table.sql<br>
 dbo.JobList.Table.sql<br>
-dbo.prGetTables.StoredProcedure.sql<br>
-dbo.prInsertTableList.StoredProcedure.sql<br>
 dbo.ServerList.Table.sql<br>
 dbo.ServiceList.Table.sql<br>
 dbo.TableList.Table.sql<br>
